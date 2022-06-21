@@ -1,0 +1,23 @@
+{
+  "name": "gherkin-demo",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "license": "MIT",
+  "devDependencies": {
+    "@cucumber/cucumber": "^8.3.0",
+    "@types/node": "^18.0.0",
+    "@types/ramda": "^0.28.14",
+    "chai": "^4.3.6",
+    "ts-node": "^10.8.1",
+    "tsconfig-paths": "^4.0.0",
+    "typescript": "^4.7.3"
+  },
+  "dependencies": {
+    "fp-ts": "^2.12.1",
+    "node": "^17.7.2",
+    "ramda": "^0.28.0"
+  },
+  "scripts": {
+    "test": "tsc && cucumber-js src/**/*.feature --config cucumber.js"
+  }
+}
