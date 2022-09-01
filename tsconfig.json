@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "module": "CommonJS",
+    "strict": true,
     "noImplicitAny": false,
     "removeComments": true,
     "preserveConstEnums": true,
@@ -9,6 +10,7 @@
     "allowSyntheticDefaultImports": true,
     "noEmit": true,
     "baseUrl": "src",
+    "lib": ["ESNext"],
     "paths": {
       "@domain": ["./domain/"],
       "@utils": ["./utils/"]

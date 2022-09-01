@@ -1,4 +1,4 @@
-import { Product, ShoppingCart } from "@domain";
+import { createEmptyCart, Product, ShoppingCart } from "@domain";
 
 export class CustomWorld {
   shoppingCart: ShoppingCart;
@@ -7,6 +7,7 @@ export class CustomWorld {
   constructor(options) {
     // super(options);
     this.products = [];
+    this.shoppingCart = createEmptyCart();
   }
 
   public addProduct(p: Product) {

@@ -1,21 +1,24 @@
-import { Transformation } from "@utils";
-import {  flow, identity, pipe } from "fp-ts/lib/function";
-import { evolve } from "fp-ts/lib/struct";
+import { Price, Quantity } from "domain/types";
 import { addToItems } from "./shopping-cart-item";
-import { CartItem, ShoppingCart } from "./types";
+import { CartId, CartItem, EmptyShoppingCart, LoadedShoppingCart, ShoppingCart } from "./types";
 
-const evolveShoppingCart = evolve<ShoppingCart, Transformation<ShoppingCart>>;
+export const createEmptyCart = (): EmptyShoppingCart => ({  __brand: "EmptyShoppingCart", id: "123" as CartId, total: 0.0, itemCount: 0 });
 
+export const isEmptyShoppingCart = (cart: ShoppingCart): cart is EmptyShoppingCart => cart.__brand === "EmptyShoppingCart";
+export const isLoadedShoppingCart = (cart: ShoppingCart): cart is LoadedShoppingCart => cart.__brand === "LoadedShoppingCart";
 
-export const addToCartTransform = (newCartItem: CartItem): Transformation<ShoppingCart> => ({
-  id: identity,
-  items: addToItems(newCartItem),
-  itemCount: (currCount) => currCount + newCartItem.quantity,
-  total: (total) => total + newCartItem.price * newCartItem.quantity,
-});
+const addItem = (cart: ShoppingCart, cartItem: CartItem): LoadedShoppingCart => {
+  const addItem = isEmptyShoppingCart(cart) ? addToItems([], cartItem) : addToItems(cart.items, cartItem);
+  return ({
+    __brand: "LoadedShoppingCart" as const,
+    id: cart.id,
+    items: addItem,
+    itemCount: cart.itemCount + cartItem.quantity as Quantity,
+    total: cart.total + cartItem.price * cartItem.quantity as Price,
+  })
+}
 
 
 export const addItemToCart = (cart: ShoppingCart) => (newCartItem: CartItem): ShoppingCart => 
-pipe(cart, evolveShoppingCart(addToCartTransform(newCartItem)));
+addItem(cart, newCartItem);
 
-export const createEmptyCart = (): ShoppingCart => ({ id: "123", items: [], total: 0.0, itemCount: 0 });

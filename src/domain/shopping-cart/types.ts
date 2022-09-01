@@ -1,22 +1,41 @@
-import * as Eq from "fp-ts/Eq";
-import * as Ord from "fp-ts/Ord";
-import * as S from "fp-ts/string";
-import * as N from "fp-ts/number";
+import { WholeNumber } from "utils";
+import { NonEmptyArray } from "fp-ts/lib/NonEmptyArray";
+import { Price, Quantity } from "domain/types";
 
-export interface CartItem {
-  name: string;
-  price: number;
-  quantity: number;
+export type CartId = string & { __brand: "CartId" };
+export type CartItemId = string & { __brand: "CartItem" };
+export type CartItemName = string & { __brand: "CartItemName" }
+
+export interface NewCartItem {
+  name: CartItemName;
+  price: Price;
+  quantity: Quantity;
 }
 
-export const cartItemEq = Eq.struct<Omit<CartItem, "quantity">>({
-  name: S.Eq,
-  price: N.Eq,
-});
-
-export interface ShoppingCart {
-  id: string;
-  items: Array<CartItem>;
-  total: number;
-  itemCount: number;
+export interface ExistingCartItem {
+  id: CartItemId;
+  name: CartItemName;
+  price: Price;
+  quantity: Quantity;
 }
+
+export type CartItem = ExistingCartItem | NewCartItem
+
+export interface LoadedShoppingCart {
+  __brand: "LoadedShoppingCart",
+  id: CartId;
+  items: NonEmptyArray<CartItem>;
+  total: Price;
+  itemCount: WholeNumber;
+}
+
+export interface EmptyShoppingCart {
+  __brand: "EmptyShoppingCart"
+  id: CartId;
+  total: 0.0;
+  itemCount: 0;
+}
+
+
+
+export type ShoppingCart = LoadedShoppingCart | EmptyShoppingCart;
